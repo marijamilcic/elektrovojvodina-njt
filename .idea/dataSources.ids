@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - elektrovojvodina@localhost" uuid="98b8baed-c15c-4537-bc08-d701f22a0aee">
+    <database-info product="MySQL" version="5.7.9" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.35 ( Revision: 5fb9c5849535c13917c2cf9baaece6ef9693ef27 )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
+    <database-model serializer="dbm" rdbms="MYSQL" format-version="2.5">
+      <schema id="1" name="elektrovojvodina"/>
+      <table id="2" parent="1" name="aktivnost"/>
+      <table id="3" parent="1" name="dodela"/>
+      <table id="4" parent="1" name="element"/>
+      <table id="5" parent="1" name="kalendar_odrzavanja"/>
+      <table id="6" parent="1" name="knjiga_odrzavanja"/>
+      <table id="7" parent="1" name="korak"/>
+      <table id="8" parent="1" name="lista_odrzavanja"/>
+      <table id="9" parent="1" name="radni_nalog"/>
+      <table id="10" parent="1" name="radnik"/>
+      <table id="11" parent="1" name="sablon"/>
+      <table id="12" parent="1" name="stavka_knjige"/>
+      <table id="13" parent="1" name="stavka_rn"/>
+      <table id="14" parent="1" name="tip_elementa"/>
+      <table id="15" parent="1" name="tip_tima"/>
+      <table id="16" parent="1" name="uloga"/>
+      <column id="17" parent="2" name="id_aktivnosti">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="18" parent="2" name="naziv_aktivnosti">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="19" parent="2" name="id_sablona">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="20" parent="2" name="PRIMARY">
+        <columns>id_aktivnosti</columns>
+        <primary>1</primary>
+      </key>
+      <column id="21" parent="3" name="id_uloge">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="22" parent="3" name="id_radnika">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="23" parent="3" name="id_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="24" parent="3" name="odgovorno_lice">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="25" parent="3" name="datum_od">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="26" parent="3" name="datum_do">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <key id="27" parent="3" name="PRIMARY">
+        <columns>id_uloge
+id_radnika
+id_rn</columns>
+        <primary>1</primary>
+      </key>
+      <column id="28" parent="4" name="id_elementa">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="29" parent="4" name="lokacija">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="30" parent="4" name="koordinate">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="31" parent="4" name="opis">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="32" parent="4" name="id_tipaelementa">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="33" parent="4" name="PRIMARY">
+        <columns>id_elementa</columns>
+        <primary>1</primary>
+      </key>
+      <column id="34" parent="5" name="id_kalendara">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="35" parent="5" name="status">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="36" parent="5" name="datum_kreiranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="37" parent="5" name="tip_aktivnosti">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="38" parent="5" name="grupa_aktivnosti">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="39" parent="5" name="id_plana_odrzavanja">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="40" parent="5" name="PRIMARY">
+        <columns>id_kalendara</columns>
+        <primary>1</primary>
+      </key>
+      <column id="41" parent="6" name="id_knjige">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="42" parent="6" name="redni_broj">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="43" parent="6" name="datum_kreiranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <key id="44" parent="6" name="PRIMARY">
+        <columns>id_knjige
+redni_broj</columns>
+        <primary>1</primary>
+      </key>
+      <column id="45" parent="7" name="id_koraka">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="46" parent="7" name="naziv_koraka">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="47" parent="7" name="id_aktivnosti">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="48" parent="8" name="id_sablona">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="49" parent="8" name="id_liste">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="50" parent="8" name="stanje">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="51" parent="8" name="radnik_koji_je_zatvorio_listu">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="52" parent="8" name="datum_kreiranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="53" parent="8" name="datum_dodele_korisniku">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="54" parent="8" name="planirani_datum_izvrsenja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="55" parent="8" name="datum_zatvaranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="56" parent="8" name="datum_revizije">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="57" parent="8" name="id_kalendara">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="58" parent="8" name="id_stavke_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="59" parent="8" name="id_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="60" parent="8" name="PRIMARY">
+        <columns>id_sablona
+id_liste</columns>
+        <primary>1</primary>
+      </key>
+      <column id="61" parent="9" name="id_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="62" parent="9" name="datum_otvaranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="63" parent="9" name="datum_zatvaranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="64" parent="9" name="status">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <key id="65" parent="9" name="PRIMARY">
+        <columns>id_rn</columns>
+        <primary>1</primary>
+      </key>
+      <column id="66" parent="10" name="id_radnika">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="67" parent="10" name="jmbg">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="68" parent="10" name="strucnost">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="69" parent="10" name="status">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="70" parent="10" name="ime">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="71" parent="10" name="prezime">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <key id="72" parent="10" name="PRIMARY">
+        <columns>id_radnika</columns>
+        <primary>1</primary>
+      </key>
+      <column id="73" parent="11" name="id_sablona">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="74" parent="11" name="oznaka_sablona">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="75" parent="11" name="naziv_sablona">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="76" parent="11" name="vremenske_oznake">
+        <mandatory>1</mandatory>
+        <data-type>varchar(50)</data-type>
+      </column>
+      <column id="77" parent="11" name="mesto">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="78" parent="11" name="datum">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="79" parent="11" name="odgovorni_rukovodilac">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="80" parent="11" name="odgovorno_lice_za_eeo">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="81" parent="11" name="tip_opreme_id">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="82" parent="11" name="stanje_sablona">
+        <mandatory>1</mandatory>
+        <data-type>varchar(50)</data-type>
+      </column>
+      <key id="83" parent="11" name="PRIMARY">
+        <columns>id_sablona</columns>
+        <primary>1</primary>
+      </key>
+      <column id="84" parent="12" name="id_knjige">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="85" parent="12" name="redni_broj">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="86" parent="12" name="datum_kreiranja">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="87" parent="12" name="napomena">
+        <mandatory>1</mandatory>
+        <data-type>varchar(50)</data-type>
+      </column>
+      <column id="88" parent="12" name="id_sablona">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="89" parent="12" name="id_liste">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="90" parent="12" name="PRIMARY">
+        <columns>id_knjige
+redni_broj</columns>
+        <primary>1</primary>
+      </key>
+      <column id="91" parent="13" name="id_stavke_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="92" parent="13" name="id_rn">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="93" parent="13" name="status">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="94" parent="13" name="redni_broj">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="95" parent="13" name="PRIMARY">
+        <columns>id_stavke_rn
+id_rn</columns>
+        <primary>1</primary>
+      </key>
+      <column id="96" parent="14" name="id_tipa_elementa">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="97" parent="14" name="opis_tipa">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <column id="98" parent="14" name="id_sablona">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="99" parent="14" name="PRIMARY">
+        <columns>id_tipa_elementa</columns>
+        <primary>1</primary>
+      </key>
+      <column id="100" parent="15" name="id_tima">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="101" parent="15" name="id_uloge">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="102" parent="15" name="id_tipaelementa">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="103" parent="15" name="PRIMARY">
+        <columns>id_tima</columns>
+        <primary>1</primary>
+      </key>
+      <column id="104" parent="16" name="id_uloge">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="105" parent="16" name="naziv_uloge">
+        <mandatory>1</mandatory>
+        <data-type>varchar(20)</data-type>
+      </column>
+      <key id="106" parent="16" name="PRIMARY">
+        <columns>id_uloge</columns>
+        <primary>1</primary>
+      </key>
+    </database-model>
+  </data-source>
+</component>

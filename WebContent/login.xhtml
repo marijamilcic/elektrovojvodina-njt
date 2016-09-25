@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" >
+<h:head>
+    <title>login</title>
+</h:head>
+<h:body>
+    <!--<h:form>-->
+
+        <!--<h3>Dobrodošli! Molimo vas ulogujte se.</h3>-->
+        <!--&lt;!&ndash;<h:outputText value="Username" />&ndash;&gt;-->
+        <!--<p:inputText id="username" value="#{userBean.user.user}" var="u"></p:inputText>-->
+        <!--<h:message for="username"></h:message>-->
+        <!--<br></br><br></br>-->
+
+        <!--&lt;!&ndash;<h:outputText value="Password" />&ndash;&gt;-->
+        <!--<p:password id="password" value="#{userBean.user.pass}" var ="p"></p:password>-->
+        <!--<h:message for="password"></h:message>-->
+        <!--<br></br><br></br>-->
+        <!--<p:commandButton action="#{userBean.getUserByUsernameAndPass(u,p)}"-->
+                         <!--actionListener=""-->
+                         <!--value="Login" var="user1" update="out" >-->
+
+        <!--</p:commandButton>-->
+        <!--<h:outputText id="out" value="#{userBean.user.prezime}"/>-->
+    <!--</h:form>-->
+    <h:form styleClass="login" >
+        <p:growl id="growl" sticky="true"  showDetail="true"/>
+        <h1>Login</h1>
+        <p:inputText id="uname" value="#{userBean.user.user}" var="korisnickoime"  placeholder="Username" required="true" requiredMessage="Unesi korisnicko ime"/><br/>
+        <p:password id="pass" value="#{userBean.user.pass}" var="sifra" required="true" placeholder="Password"   requiredMessage="Unesi lozinku"/><br/>
+        <p:commandButton value="Login" update="growl" validateClient="true" icon="fa fa-sign-in" action="#{userBean.getUserByUsernameAndPass(korisnickoime,sifra)}" styleClass="button"/>
+    </h:form>
+</h:body>
+</html>

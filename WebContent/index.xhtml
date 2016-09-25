@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+>
+    <h:head>
+    	<h:outputStylesheet library="css" name="table-style.css"  />
+    </h:head>
+ 
+    <h:body>
+ 
+    	<h1>Spring Hibernate JSF Example</h1>
+ 
+ 		<h:dataTable value="#{workerBean.listWorkers()}" var="s">
+ 
+    		<h:column>
+    			<f:facet name="header">
+    				Student ID
+    			</f:facet>
+    				#{s.workerID}
+    		</h:column>
+ 
+    		<h:column>
+    			<f:facet name="header">
+    				First Name
+				</f:facet>
+    				#{s.name}
+    		</h:column>
+ 
+ 			<h:column>
+    			<f:facet name="header">
+    				Last Name
+				</f:facet>
+    				#{s.surname}
+    		</h:column>
+  
+    	</h:dataTable>
+ 
+ 		<h2>Add New Student</h2>
+ 		<h:form id="form">
+ 
+ 			<h:panelGrid columns="3">
+ 
+				First Name : 
+				<p:inputText id="fname" value="#{workerBean.worker.name}"
+					size="50" required="true"
+					label="First Name" >
+				</p:inputText>
+ 
+				<p:message for="fname" style="color:#a0ff71" />
+ 
+				Last Name : 
+				<p:inputText id="lname" value="#{workerBean.worker.surname}"
+					 size="50" required="true"
+					 >
+				</p:inputText>
+ 
+				<p:message for="lname" style="color:#ff50fe" />
+
+				Professionalism :
+				<p:inputText id="fstrucnost" value="#{workerBean.worker.professionalism}"
+							 size="50" required="true"
+							 label="" >
+				</p:inputText>
+				<p:message for="fstrucnost" style="color:#ff50fe" />
+
+				Status :
+				<p:inputText id="fstatus" value="#{workerBean.worker.status}"
+							 size="50" required="true"
+							 label="" >
+				</p:inputText>
+
+				<p:message for="fstatus" style="color:#a0ff71" />
+
+
+			</h:panelGrid>
+ 
+			<p:commandButton value="Submit" action="#{workerBean.addWorker()}" update="form" />
+			<p:commandButton value="Reset Code" update="panel" process="@this" actionListener="#{workerBean.reset}"  style="margin-right:20px;" />
+
+
+ 		</h:form>
+
+    </h:body>
+ 
+</html>

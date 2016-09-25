@@ -1,0 +1,618 @@
+<jsp:root xmlns="http://www.w3.org/1999/xhtml" version="2.0"
+          xmlns:ui="http://java.sun.com/jsf/facelets"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:util="http://java.sun.com/jsf/composite/component/util"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:p="http://primefaces.org/ui"
+          xmlns:pe="http://primefaces.org/ui/extensions"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page">
+
+    <ui:composition template="/layout/layout.xhtml">
+
+        <ui:define name="content">
+
+            <p:hotkey bind="1" handler="filterTab.select(0)" />
+            <p:hotkey bind="2" handler="filterTab.select(1)" />
+            <p:hotkey bind="3" handler="filterTab.select(2)" />
+            <p:hotkey bind="4" handler="filterTab.select(3)" />
+
+            <p:hotkey bind="left" handler="if(filterTab.getActiveIndex() == 0)return;filterTab.select(filterTab.getActiveIndex() - 1)" />
+            <p:hotkey bind="right" handler="if(filterTab.getActiveIndex() == 3)return;filterTab.select(filterTab.getActiveIndex() + 1)" />
+
+            <h:form id="form" styleClass="globalForm" target="_blank">
+
+                <h:panelGroup id="wrapper" layout="block">
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $("#resulttable tr").not(':first').hover(
+                                    function () {
+                                        $(this).css("background","#87A3EA");
+                                    },
+                                    function () {
+                                        $(this).css("background","");
+                                    }
+                            );
+                        });
+
+                        var oTable = null;
+                        $(document).ready( function () {
+                            var headerCount = $('#form\\:headerCount').text();
+                            var exist = $('#resulttable');
+                            if(exist.size() > 0 &amp;&amp; headerCount > 0){
+                                oTable = $('#resulttable').dataTable( {
+                                    "sScrollY": '500px',
+                                    "sScrollX": "100%",
+                                    /*"sScrollXInner": "100%",*/
+                                    "bScrollCollapse": true,
+                                    "bPaginate": false,
+                                    "bFilter": false,
+                                    "bSort": false,
+                                    "bInfo": false
+                                } );
+                                new FixedColumns( oTable, {
+                                    "iLeftColumns": 1,
+                                    "iLeftWidth": 370
+                                } );
+
+                                $(window).trigger('resize');
+
+                            }
+                        } );
+
+                        var calcDataTableHeight = function() {
+                            return $(window).height() * 70/100;
+                        };
+
+                        $(window).resize(function () {
+                            /*var oSettings = oTable.fnSettings();
+                             oSettings.oScroll.sY = calcDataTableHeight();
+                             oTable.fnDraw();*/
+                        });
+                        function start() {
+                            //PF('statusDialog').show();
+                        }
+
+                        function stop() {
+                            //PF('statusDialog').hide();
+                        }
+                    </script>
+
+                    <!-- result page title -->
+                    <h:panelGrid columns="3" cellpadding="5" rendered="#{homeBean.searchResult || (homeBean.isCip() and !homeBean.cipForm.showFilters)}">
+                        <c:if test="${!userSessionBean.mainDomain}">
+                            <h:outputFormat value="THIS IS UNIDO DATA.BROWSER TEST SERVER. YOU WILL BE REDIRECTED IN COUPLE OF SECONDS!" style="font-weight:bold;color:red"/>
+                        </c:if>
+                        <h:outputFormat value="#{msg['home.reslt.title']}" style="font-weight:bold;">
+                            <f:param value="#{homeBean.datasetName}"/>
+                        </h:outputFormat>
+                    </h:panelGrid>
+
+                    <c:if test="${!userSessionBean.mainDomain}">
+                        <h:outputFormat value="THIS IS UNIDO DATA.BROWSER TEST SERVER. YOU WILL BE REDIRECTED IN COUPLE OF SECONDS!" style="font-weight:bold;color:red"
+                                        rendered="#{!homeBean.searchResult and !(homeBean.isCip() and !homeBean.cipForm.showFilters)}"/>
+                    </c:if>
+
+                    <h:panelGroup>
+
+                    </h:panelGroup>
+
+                    <h:panelGrid columns="3" cellpadding="0" styleClass="home-buttons-area" rendered="#{!homeBean.isCip() || homeBean.cipForm.showFilters}">
+                        <p:outputLabel for="dataset" value="#{msg['home.dataset.label']}" rendered="#{!homeBean.searchResult}"/>
+                        <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                            <p:selectOneMenu id="dataset" value="#{homeBean.datasetId}" rendered="#{!homeBean.searchResult}">
+                                <f:selectItems value="#{homeBean.datasetSelect}"/>
+                                <p:ajax listener="#{homeBean.datasetChanged}" process="@this" update="@(.maincontainer)"/>
+                            </p:selectOneMenu>
+                            <p:outputPanel autoUpdate="true">
+                                <p:commandButton value="#{msg['btn.search']}" actionListener="#{homeBean.search}" process="@this" update="@form"
+                                                 disabled="#{!homeBean.searchEnabled}" rendered="#{!homeBean.searchResult and !homeBean.cipForm.show}" styleClass="view-data"/>
+                                <p:commandButton value="#{msg['btn.search']}" actionListener="#{homeBean.cipForm.search}" update="@(.maincontainer)" style="float: right" process="@this"
+                                                 rendered="#{homeBean.cipForm.show}" styleClass="view-data" />
+                            </p:outputPanel>
+                        </h:panelGrid>
+                        <p:outputPanel autoUpdate="true">
+                            <div style="float: left;width: 100%">
+                                <div style="float: left;">
+                                    <p:commandButton value="#{msg['home.btn.back']}" actionListener="#{homeBean.backToSearch}" process="@this" update="@form" rendered="#{homeBean.searchResult}"/>
+                                    <p:commandButton value="#{msg['home.btn.layout']}" update="@none" process="@this" onclick="PF('dlg1').show()" rendered="#{homeBean.searchResult}"/>
+                                </div>
+                                <div class="home-button-right">
+                                    <p:commandButton value="#{msg['btn.search_new']}" action="#{homeBean.initFilters}" update="@(.container-cip)" rendered="#{!homeBean.searchResult}"/>
+                                    <p:commandButton value="#{msg['btn.showGraph']}" action="#{homeBean.showGraph}" ajax="false" disabled="#{!homeBean.searchEnabled}"/>
+                                    <p:commandButton value="#{msg['btn.export']}" action="#{homeBean.initReportSettings}" process="@this" update=":reportDialogWrapper" rendered="#{!homeBean.cipForm.show}"/>
+                                    <p:commandButton value="#{msg['btn.export']}" action="#{homeBean.initDownload}" rendered="#{homeBean.cipForm.show and homeBean.showDownloadButton}"/>
+                                    <h:panelGroup>
+                                        <p:commandButton styleClass="downloadLink" id="downloadLink" value="Download 2" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" style="display:none;">
+                                            <p:fileDownload value="#{homeBean.clientFile}" />
+                                        </p:commandButton>
+
+                                        <!-- p:commandButton value="#{msg['btn.download']}" action="#{homeBean.initDownload}" process="@this" rendered="#{homeBean.showDownloadButton}"/ -->
+
+                                    </h:panelGroup>
+                                    <p:commandButton value="#{msg['btn.saveQuery']}" actionListener="#{queryBean.initSaveQuery}" process="@this" rendered="#{homeBean.searchEnabled}"
+                                                     update="@(.queryDialogWrapper)"/>
+                                    <p:commandButton value="#{msg['btn.loadQuery']}" immediate="true" action="#{queryBean.redirectToQueries}" rendered="#{homeBean.queryExist}"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <!--<p:ajaxStatus>
+                            <f:facet name="start">
+                                <h:graphicImage library="images" name="ajax_process.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value="" />
+                            </f:facet>
+                        </p:ajaxStatus>		  -->
+                    </h:panelGrid>
+
+                    <h:panelGroup rendered="#{homeBean.cipForm.show}">
+                        <ui:include src="cip/cip.xhtml"/>
+                    </h:panelGroup>
+
+                    <h:panelGrid columns="3" cellpadding="5" rendered="#{!homeBean.searchResult and !homeBean.cipForm.show}">
+                        <h:outputText value="#{msg['home.content.title']}"/>
+                    </h:panelGrid>
+
+                    <!--
+                    <h:panelGroup id="resultTable" rendered="#{!homeBean.cipForm.show}">
+                        <h:panelGrid columns="3" cellpadding="5" rendered="#{!homeBean.searchForm}">
+                            <p:commandButton value="#{msg['btn.back']}" ajax="false" actionListener="#{homeBean.backToSearch}"/>
+                        </h:panelGrid>
+                    </h:panelGroup> -->
+
+                    <h:panelGroup id="searchTable" styleClass="search-table" rendered="#{!homeBean.cipForm.show}">
+
+                        <h:panelGrid columns="3" cellpadding="5" rendered="#{!homeBean.searchResult}">
+
+                            <p:tabView orientation="top" styleClass="filterTab" id="filterTab" dynamic="true"
+                                       activeIndex="#{homeBean.activeTab}" cache="false" widgetVar="filterTab">
+
+                                <!--<p:ajax event="tabChange"/>-->
+                                <!-- countries tab -->
+                                <p:tab title="#{msg['home.tab.countries']}">
+
+                                    <h:panelGrid columns="1" style="width:100%">
+                                        <p:selectOneRadio value="#{homeBean.countryPicklist.countryDisplayType}" rendered="#{!homeBean.isMVA()}">
+                                            <f:selectItem itemLabel="Countries" itemValue="C"/>
+                                            <f:selectItem itemLabel="Country group lists" itemValue="G"/>
+                                            <p:ajax process="@this" update="@(form)" listener="#{homeBean.countryPicklist.countryDisplayedTypeChanged}"
+                                                    oncomplete="PF('countryWidgetSource').clearFilters();PF('countryWidgetTarget').clearFilters()"/>
+                                        </p:selectOneRadio>
+                                        <p:selectOneRadio value="#{homeBean.countryPicklist.countryDisplayType}" rendered="#{homeBean.isMVA()}">
+                                            <f:selectItem itemLabel="Countries" itemValue="C"/>
+                                            <f:selectItem itemLabel="Country group lists" itemValue="G"/>
+                                            <f:selectItem itemLabel="Country group aggregations" itemValue="A"/>
+                                            <p:ajax process="@this" update="@(form)" listener="#{homeBean.countryPicklist.countryDisplayedTypeChanged}"
+                                                    oncomplete="PF('countryWidgetSource').clearFilters();PF('countryWidgetTarget').clearFilters()"/>
+                                        </p:selectOneRadio>
+                                        <h:panelGroup layout="block" style="height: 400px;overflow-y: scroll; overflow-x: hidden"
+                                                      id="countriesFilter" styleClass="countriesFilter">
+                                            <!--countries-->
+                                            <h:panelGroup id="countryPanel"
+                                                          styleClass="countryPanel">
+                                                <util:customPicklist
+                                                        sortBy="#{row.picklistItem}"
+                                                        rowText="#{row.picklistItem}"
+                                                        componentId=":form:filterTab:countryComponent"
+                                                        panelId="countryPanel"
+                                                        id="countryComponent"
+                                                        listForm="#{homeBean.countryPicklist}"
+                                                        widgetVarSource="countryWidgetSource"
+                                                        widgetVarTarget="countryWidgetTarget"
+                                                        tabTitle="#{msg['home.filter.tabTitle.country']}"
+                                                        filterMatchMode="startsWith"
+                                                        type="COUNTRY"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+                                </p:tab>
+                                <!-- variable tab -->
+                                <p:tab title="#{msg['home.tab.variables']}">
+                                    <util:customPicklist
+                                            sortBy="#{row.sort}"
+                                            rowText="#{row.picklistItem}"
+                                            componentId=":form:filterTab:variableComponent"
+                                            panelId="variablePanel"
+                                            id="variableComponent"
+                                            listForm="#{homeBean.variablePicklist}"
+                                            widgetVarSource="variableWidgetSource"
+                                            widgetVarTarget="variableWidgetTarget"
+                                            tabTitle="#{msg['home.filter.tabTitle.variable']}"
+                                            filterMatchMode="startsWith"
+                                            type="VARIABLE"/>
+                                </p:tab>
+                                <!-- period tab -->
+                                <p:tab title="#{msg['home.tab.period']}">
+                                    <util:customPicklist
+                                            sortBy="#{row.picklistItem}"
+                                            rowText="#{row.picklistItem}"
+                                            componentId=":form:filterTab:periodComponent"
+                                            panelId="periodPanel"
+                                            id="periodComponent"
+                                            listForm="#{homeBean.periodPicklist}"
+                                            widgetVarSource="periodWidgetSource"
+                                            widgetVarTarget="periodWidgetTarget"
+                                            sortOrder="descending"
+                                            tabTitle="#{msg['home.filter.tabTitle.period']}"
+                                            filterMatchMode="startsWith"
+                                            type="PERIOD"/>
+                                </p:tab>
+                                <!-- isic tab -->
+                                <p:tab title="#{msg['home.tab.isic']}" rendered="#{homeBean.isicDataExist}">
+                                    <h:panelGrid columns="1" rendered="#{!homeBean.searchResult and !empty homeBean.isicCodesLengthList and homeBean.isicCodesLengthList.size() > 1}">
+                                        <h:panelGrid columns="2">
+                                            Select:
+                                            <p:selectManyCheckbox value="#{homeBean.isicCodesLengthListSelectedValues}" layout="grid" columns="4">
+                                                <f:selectItems value="#{homeBean.isicCodesLengthList}" var="code" itemLabel="#{code}-digits" itemValue="#{code}" />
+                                                <p:ajax process="@this" listener="#{homeBean.filterIsics}" update="@(.maincontainer)" oncomplete="PF('isicWidgetSource').filter()"/>
+                                            </p:selectManyCheckbox>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                    <util:customPicklist
+                                            sortBy="#{row.picklistItem}"
+                                            rowText="#{row.picklistItem}"
+                                            componentId=":form:filterTab:isicComponent"
+                                            panelId="isicPanel"
+                                            id="isicComponent"
+                                            listForm="#{homeBean.isicPicklist}"
+                                            widgetVarSource="isicWidgetSource"
+                                            widgetVarTarget="isicWidgetTarget"
+                                            tabTitle="#{msg['home.filter.tabTitle.isic']}"
+                                            filterMatchMode="contains"
+                                            type="ISIC"/>
+                                </p:tab>
+                            </p:tabView>
+
+                        </h:panelGrid>
+                        <c:if test="${homeBean.searchResult}" >
+                            <h:panelGrid columns="3" styleClass="home-dimension-area">
+                                <!--
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel for="datasetSearch" value="#{msg['home.dataset.label']}" rendered="#{homeBean.searchResult}"/>
+                                        <p:selectOneMenu id="datasetSearch" value="#{homeBean.datasetId}" rendered="#{homeBean.searchResult}">
+                                            <f:selectItems value="#{homeBean.datasetSelect}"/>
+                                            <p:ajax listener="#{homeBean.datasetChanged}" process="@this" update="@form"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                     -->
+                                <h:outputText value="" />
+                                <h:panelGroup style="float: left">
+                                    <h:panelGrid columns="4" columnClasses="search1, search2,search1, search2">
+                                        <!--dimension 1 drop down-->
+                                        <p:autoComplete id="d1" dropdown="true" value="#{homeBean.dimension1Selected}" completeMethod="#{homeBean.searchDimenstion1}"
+                                                        var="search" itemLabel="#{search.title}" itemValue="#{search}" converter="dimension1Converter" scrollHeight="200"
+                                        >
+                                            <p:ajax event="itemSelect" listener="#{homeBean.handleSelectDimenstion1}" process="@this" update="@form"/>
+                                        </p:autoComplete>
+                                        <p:commandLink value="#{msg['home.btn.metadata']}" actionListener="#{homeBean.showMetadataDimension1}" styleClass="metadata-search"
+                                                       disabled="#{!homeBean.searchPage.md1}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog"/>
+                                        <!--dimension 2 drop down-->
+                                        <p:autoComplete id="d2" styleClass="ac-d2" dropdown="true" value="#{homeBean.dimension2Selected}" completeMethod="#{homeBean.searchDimenstion2}"
+                                                        var="search" itemLabel="#{search.title}" itemValue="#{search}" converter="dimension2Converter"
+                                                        scrollHeight="200" rendered="#{homeBean.isicDataExist}"  oncomplete="clearHighlight('d2')">
+                                            <p:ajax event="itemSelect" listener="#{homeBean.handleSelectDimenstion2}" process="@this" update="@form"/>
+                                        </p:autoComplete>
+                                        <p:commandLink value="#{msg['home.btn.metadata']}" actionListener="#{homeBean.showMetadataDimension2}" rendered="#{homeBean.isicDataExist}"
+                                                       disabled="#{!homeBean.searchPage.md2}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog" styleClass="metadata-search"/>
+                                    </h:panelGrid>
+                                </h:panelGroup>
+
+                                <h:panelGrid columns="1" styleClass="home-units-area">
+                                    <p:selectOneRadio value="#{homeBean.units}" rendered="#{homeBean.showDenominations}">
+                                        <f:selectItem itemLabel="Units" itemValue="#{1}"/>
+                                        <f:selectItem itemLabel="Thousands" itemValue="#{1000}"/>
+                                        <f:selectItem itemLabel="Millions" itemValue="#{1000000}"/>
+                                        <f:selectItem itemLabel="Billions" itemValue="#{1000000000}"/>
+                                        <p:ajax listener="#{homeBean.unitsChanged}" update="@form"/>
+                                    </p:selectOneRadio>
+
+                                    <p:selectOneRadio value="#{homeBean.currencySelected}" rendered="#{homeBean.searchPage.showCurrencyPanel and homeBean.chosenDataset.datasetInLocalCurrency != 'N'}">
+                                        <f:selectItem itemLabel="#{msg['home.exhange_rate.national.currency']}" itemValue="#{0}"/>
+                                        <f:selectItem itemLabel="#{msg['home.exchange_rate.usd.sign']}" itemValue="#{1}"/>
+                                        <p:ajax listener="#{homeBean.currencyChanged}" update="@form"/>
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+
+                            <h:panelGrid columns="3" cellpadding="5" style="width:100%">
+                                <h:outputText value="#{msg['home.result.metadata_info']}" escape="false"/>
+                                <h:panelGrid columns="1" style="float:right" rendered="#{homeBean.searchPage.showCurrencyPanel}">
+                                    <h:outputFormat value="#{msg['home.valuesMessage.datasetInLocaleCurrencyYes']}" style="float:right" rendered="#{homeBean.chosenDataset.datasetInLocalCurrency == 'Y' and homeBean.currencySelected == 0}">
+                                        <f:param name="units" value="#{homeBean.countryCurrencyParameter}"/>
+                                    </h:outputFormat>
+                                    <h:outputFormat value="#{msg['home.valuesMessage.datasetInLocaleCurrencyYesUSD']}" style="float:right" rendered="#{homeBean.chosenDataset.datasetInLocalCurrency == 'Y' and homeBean.currencySelected == 1}">
+                                        <f:param name="units" value="#{homeBean.countryCurrencyParameter}"/>
+                                    </h:outputFormat>
+                                    <h:outputFormat value="#{msg['home.valuesMessage.datasetInLocaleCurrencyNo']}" style="float:right" rendered="#{homeBean.chosenDataset.datasetInLocalCurrency == 'N'}">
+                                        <f:param name="units" value="#{homeBean.unitsParameter}"/>
+                                    </h:outputFormat>
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                            <table class="table-2 resulttable" style="padding: 0; margin: 0;width: 1000px" id="resulttable" >
+                                <thead>
+                                <tr>
+                                    <th>
+
+                                    </th>
+                                    <ui:repeat value="${homeBean.columnModelList}" var="column">
+                                        <th>
+                                            #{column.columnHeader}
+                                            <p:commandLink action="#{homeBean.showMetadataDimensionX(column.id, column.columnHeader)}" value="#{msg['home.btn.metadata.short']}"
+                                                           styleClass="metadata-header" rendered="#{column.showMetadata}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog"/>
+                                        </th>
+                                    </ui:repeat>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat value="#{homeBean.dataViewRowList}" var="rowData">
+                                    <tr>
+                                        <td style="text-align: left;white-space: nowrap;">
+                                            <h:panelGrid columns="3" rendered="#{homeBean.isicYAxix}" cellpadding="0" cellspacing="0" styleClass="isic-table" columnClasses="isic-table-col1,isic-table-col2">
+                                                <h:outputText value="${rowData.rowTitlePart1}" />
+                                                <h:outputText value="${rowData.rowTitlePart2}" />
+                                                <p:commandLink action="#{homeBean.showMetadataDimensionY(rowData.id, rowData.rowTitle)}" value="#{msg['home.btn.metadata.short']}" style="margin-left:10px;"
+                                                               styleClass="metadata-header" rendered="#{rowData.showMetadata}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog"/>
+                                            </h:panelGrid>
+                                            <h:panelGroup  rendered="#{!homeBean.isicYAxix}">
+                                                ${rowData.rowTitle}
+                                                <p:commandLink action="#{homeBean.showMetadataDimensionY(rowData.id, rowData.rowTitle)}" value="#{msg['home.btn.metadata.short']}"
+                                                               styleClass="metadata-header" rendered="#{rowData.showMetadata}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog"/>
+                                            </h:panelGroup>
+                                        </td>
+                                        <!-- due to unexpected error, f:subview has been added -->
+                                        <f:subview rendered="${!empty rowData.dataViewCell}" id="subviewCell">
+                                            <ui:repeat value="${rowData.dataViewCell}" var="cell">
+                                                <td style="color: #{cell.stageId gt 3 ? 'purple' : 'inherit'};">
+                                                    #{cell.cellValue}
+                                                    <p:commandLink action="#{homeBean.showMetadataDimensionCell(cell.idY, rowData.id, cell.xTitle, cell.yTitle)}" value="#{msg['home.btn.metadata.short']}" styleClass="metadata-header"
+                                                                   rendered="#{cell.showMetadata}" oncomplete="PF('metadataDialogWidget').show()" update=":metadataDialog"/>
+                                                    <h:panelGroup rendered="#{cell.showCombinations}">
+                                                        (#{cell.isicCombCode}
+                                                        <p:commandLink action="#{homeBean.showCombinations(cell.isicCombId, cell.isicCombCode)}" value="#{msg['home.btn.metadata.short']}" styleClass="metadata-header"
+                                                                       oncomplete="PF('combinationsDialogWidget').show()" update=":combinationsDialog"/>
+                                                        )
+                                                    </h:panelGroup>
+                                                    <!--
+                                                    <p:commandLink action="#{homeBean.showMetadataAndCombinations(cell.idY, rowData.id, cell.xTitle, cell.yTitle, cell.isicCombId, cell.isicCombCode)}" value="#{msg['home.btn.metadata.short']}" styleClass="metadata-header"
+                                                    rendered="#{cell.showCombinations and cell.showMetadata}" oncomplete="metadataPF('combinationsDialogWidget').show()" update=":metadataCombinationsDialog"/>
+                                                     -->
+                                                </td>
+                                            </ui:repeat>
+                                        </f:subview>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
+                        </c:if>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                    <h:graphicImage library="images" name="ajax_process.gif"/>
+                </p:dialog>
+                <p:commandButton process="@this" id="refresh" update="@form" style="display:none" oncomplete="PF('dlg1').hide();"/>
+                <h:outputText value="${homeBean.headerCount}" id="headerCount" style="display:none"/>
+                <script type="text/javascript">
+
+                    var scrollTimer = -1;
+
+                    $(function(){
+                        var width = $('#resulttable_wrapper').width() + $('.dataTables_scroll').width();
+                        $(".div1").width(width + 10);
+                        $(".div2").width(width + 10);
+
+                        $(".wrapper1").scroll(function(){
+                            scrollTop();
+                        });
+                        $(".wrapper2").scroll(function(){
+                            scrollBottom();
+                        });
+                    });
+
+                </script>
+            </h:form>
+            <p:dialog id="basicDialog" header="#{msg['home.label.layoutOption']}" widgetVar="dlg1" dynamic="true" modal="true" appendTo="@(body)">
+                <h:form>
+                    <p:orderList value="#{homeBean.userDimenstionList}" var="lo" controlsLocation="left" styleClass="layout-orderlist"
+                                 itemLabel="#{lo.title}" itemValue="#{lo}" iconOnly="true" id="basicList" converter="layoutConverter">
+                        <p:column style="width:25%;white-space:nowrap;">
+                            <h:outputText value="#{lo.title}" />
+                        </p:column><!--
+ 				        <p:column style="width:75%;white-space:nowrap;">
+           					#{homeBean.getLayoutRowSuffixText(lo)}
+       					</p:column> -->
+                    </p:orderList>
+                    <p:commandButton actionListener="#{homeBean.changeUserDimensions}" value="#{msg['btn.dialog.save']}" oncomplete="simulateButtonClick('form:refresh');" update="@none" />
+                    <p:commandButton value="#{msg['btn.dialog.cancel']}" onclick="dlg1.hide()" immediate="true"/>
+                    <p:commandButton actionListener="#{homeBean.resetToDefault}" value="#{msg['btn.dialog.reset']}" oncomplete="simulateButtonClick('form:refresh');" update="basicList" />
+                </h:form>
+            </p:dialog>
+
+            <script type="text/javascript">
+                function scrollTop() {
+                    $(".wrapper2").unbind('scroll');
+                    $(".wrapper2").animate({scrollLeft: $(".wrapper1").scrollLeft()}, 0);
+
+                    if (scrollTimer != -1)
+                        clearTimeout(scrollTimer);
+
+                    scrollTimer = window.setTimeout("scrollTopFinished()", 0);
+                }
+
+                function scrollBottom() {
+                    $(".wrapper1").unbind('scroll');
+                    $(".wrapper1").animate({scrollLeft: $(".wrapper2").scrollLeft()}, 0);
+
+                    if (scrollTimer != -1)
+                        clearTimeout(scrollTimer);
+
+                    scrollTimer = window.setTimeout("scrollBottomFinished()", 0);
+                }
+
+                function scrollTopFinished() {
+                    $('.wrapper2').bind('scroll', function() {
+                        $(".wrapper1").scrollLeft($(".wrapper2").scrollLeft());
+                    });
+                }
+
+                function scrollBottomFinished() {
+                    $('.wrapper1').bind('scroll', function() {
+                        $(".wrapper2").scrollLeft($(".wrapper1").scrollLeft());
+                    });
+                }
+                function simulateButtonClick(id){
+                    document.getElementById(id).click();
+                }
+
+                function clearFilters(){
+                    var filterTab = PF('filterTab');
+                    if(typeof filterTab !== 'undefined'){
+                        var index = PF('filterTab').getActiveIndex();
+                        switch (index){
+                            case 0: PF('countryWidgetSource').clearFilters();PF('countryWidgetTarget').clearFilters();break;
+                            case 1: PF('variableWidgetSource').clearFilters();PF('variableWidgetTarget').clearFilters();break;
+                            case 2: PF('periodWidgetSource').clearFilters();PF('periodWidgetTarget').clearFilters();break;
+                            case 3: PF('isicWidgetSource').clearFilters();PF('isicWidgetTarget').clearFilters();break;
+                        }
+                        /*$(".ui-column-filter").val('');
+                         $(".ui-column-filter").keyup();*/
+                    }
+                }
+
+            </script>
+
+            <p:dialog id="metadataDialog" widgetVar="metadataDialogWidget" dynamic="true" width="400" modal="true" appendTo="@(body)">
+                <f:facet name="header">
+                    Metadata for
+                    <h:outputText value="#{homeBean.dimension1Selected.title}" rendered="#{requestScope.dimension == 'MD1'}"/>
+                    <h:outputText value="#{homeBean.dimension2Selected.title}" rendered="#{requestScope.dimension == 'MD2'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MX'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MY'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MC'}"/>
+                </f:facet>
+                <ui:repeat value="#{homeBean.metadataList}" var="metadata">
+                    <b>#{metadata.noteClassName}</b>
+                    <br/>
+                    #{metadata.metadataNote}
+                    <br/>
+                    <br/>
+                </ui:repeat>
+            </p:dialog>
+            <p:dialog id="combinationsDialog" widgetVar="combinationsDialogWidget" dynamic="true" width="400" modal="true" appendTo="@(body)">
+                <f:facet name="header">
+                    <h:outputFormat value="#{msg['home.dialog.combinations.title']}">
+                        <f:param value="#{requestScope.isicCombCode}"></f:param>
+                    </h:outputFormat>
+                </f:facet>
+                <h:panelGroup>
+                    #{homeBean.isicCombDesc}
+                </h:panelGroup>
+            </p:dialog>
+            <h:panelGroup id="reportDialogWrapper">
+                <p:dialog id="reportDialog" rendered="#{homeBean.showReportDialog}" visible="true" widgetVar="reportDialogWidget" dynamic="true" width="500" modal="true" appendTo="@(body)">
+                    <f:facet name="header">
+                        #{msg['report.dialog.header']}
+                    </f:facet>
+                    <p:ajax event="close" update="reportDialogWrapper" listener="#{homeBean.cancelReportDialog}"/>
+                    <h:form id="reportDialogForm">
+                        <h:panelGroup>
+                            #{msg['report.dialog.downloadFormat']}
+                            <p:selectOneRadio value="#{homeBean.reportSettings.downloadFormat}">
+                                <f:selectItem itemLabel="#{msg['report.dialog.exportToExcel']}" itemValue="E"/>
+                                <f:selectItem itemLabel="#{msg['report.dialog.exportToCsv']}" itemValue="C"/>
+                                <p:ajax update="@form" listener="#{homeBean.reportSettings.downloadFormatSelected}" process="@this"/>
+                            </p:selectOneRadio>
+                            <h:panelGrid columns="2" rendered="#{homeBean.chosenDataset.datasetInLocalCurrency == 'Y'}">
+                                <h:outputText value="#{msg['report.dialog.exportValues']}" />
+                                <p:selectOneRadio value="#{homeBean.reportSettings.valueCurrency}">
+                                    <f:selectItem itemLabel="#{msg['report.dialog.nationalCurrency']}" itemValue="N"/>
+                                    <f:selectItem itemLabel="#{msg['report.dialog.usDollar']}" itemValue="D"/>
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" rendered="#{!homeBean.IDSB and !homeBean.MVA}">
+                                <h:panelGroup>
+                                    <p:selectBooleanCheckbox value="#{homeBean.reportSettings.includeMetadata}"/>
+                                    <h:outputText value="#{msg['report.dialog.includeMetadata']}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                            <h:panelGroup id="descColumns" styleClass="descColumns">
+                                <h:panelGrid columns="3" rendered="#{homeBean.reportSettings.downloadFormat != 'C'}">
+                                    <h:panelGroup>
+                                        <p:selectBooleanCheckbox value="#{homeBean.reportSettings.includeCountryDescription}"/>
+                                        <h:outputText value="#{msg['report.dialog.countryDescription']}" />
+                                    </h:panelGroup>
+                                    <h:panelGroup  rendered="#{!homeBean.MVA}">
+                                        <p:selectBooleanCheckbox value="#{homeBean.reportSettings.includeIsicDescription}"/>
+                                        <h:outputText value="#{msg['report.dialog.isicDescription']}" />
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!homeBean.IDSB}">
+                                        <p:selectBooleanCheckbox value="#{homeBean.reportSettings.includeTableDescription}"/>
+                                        <h:outputText value="#{msg['report.dialog.tableDescription']}" rendered="#{!homeBean.MVA}"/>
+                                        <h:outputText value="#{msg['report.dialog.tableDescription.mva']}" rendered="#{homeBean.MVA}"/>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                                <h:panelGrid columns="3" rendered="#{homeBean.reportSettings.downloadFormat == 'C'}">
+                                    <h:panelGroup>
+                                        <p:selectManyCheckbox value="#{homeBean.selectedImportFiles}">
+                                            <f:selectItems value="#{homeBean.importFilesSelectItems}"/>
+                                        </p:selectManyCheckbox>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+                            <!--<h:panelGroup>
+                                <p:inputText value="#{homeBean.reportSettings.userEmail}" id="email" required="true" style="width:300px;">
+                                    <f:validator validatorId="emailValidator"/>
+                                    <p:watermark value="#{msg['report.dialog.emailAddress']}" for="email"/>
+                                </p:inputText>
+                                <p:message for="email"/>
+                            </h:panelGroup>-->
+                            <h:panelGrid columns="2">
+                                <p:commandButton ajax="false" value="#{msg['report.dialog.btn.ok']}" action="#{homeBean.exportDataAction}" update="@form" process="@this"
+                                                 oncomplete="PF('reportDialogWidget').hide()"/>
+                                <p:commandButton value="#{msg['report.dialog.btn.cancel']}" actionListener="#{homeBean.cancelReportDialog}"
+                                                 immediate="true" oncomplete="PF('reportDialogWidget').hide()" />
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:form>
+                </p:dialog>
+            </h:panelGroup>
+
+            <!--
+            <p:dialog id="metadataCombinationsDialog" widgetVar="metadataCombinationsDialogWidget" dynamic="true" width="400" modal="true"  appendTo="@(body)">
+                <f:facet name="header">
+                    <h:outputFormat value="#{msg['home.dialog.combinations_metadata.comb.title']} ">
+                        <f:param value="#{requestScope.isicCombCode}"></f:param>
+                    </h:outputFormat>
+                    <h:outputText value="#{msg['home.dialog.combinations_metadata.meta.title']} "/>
+
+                    <h:outputText value="#{homeBean.dimension1Selected.title}" rendered="#{requestScope.dimension == 'MD1'}"/>
+                    <h:outputText value="#{homeBean.dimension2Selected.title}" rendered="#{requestScope.dimension == 'MD2'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MX'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MY'}"/>
+                    <h:outputText value="#{requestScope.dimensionValue}" rendered="#{requestScope.dimension == 'MC'}"/>
+                </f:facet>
+                <h:panelGroup>
+                    <h:outputText value="#{homeBean.combinationText}"/>
+                    <br/>
+                    <br/>
+                    <ui:repeat value="#{homeBean.metadataList}" var="metadata">
+                        <b>#{metadata.noteClassName}</b>
+                        <br/>
+                        #{metadata.metadataNote}
+                        <br/>
+                        <br/>
+                    </ui:repeat>
+                </h:panelGroup>
+            </p:dialog>   -->
+
+        </ui:define>
+
+
+
+    </ui:composition>
+
+</jsp:root>
