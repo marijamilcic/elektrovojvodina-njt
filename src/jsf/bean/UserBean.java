@@ -49,4 +49,5 @@ public class UserBean {
         return userService.getUser(name, password);
 
     }
+
 }
