@@ -40,7 +40,7 @@
  
  		<h2>Add New Student</h2>
  		<h:form id="form">
- 
+
  			<h:panelGrid columns="3">
  
 				First Name : 
@@ -76,7 +76,7 @@
 
 
 			</h:panelGrid>
- 
+
 			<p:commandButton value="Submit" action="#{workerBean.addWorker()}" update="form" />
 			<p:commandButton value="Reset Code" update="form" process="@this" actionListener="#{workerBean.reset}"  style="margin-right:20px;" />
   <!-- ovde bi trebalo imati dugme za reset - cisti vrednosti podataka sa forme nakon submit-a -->

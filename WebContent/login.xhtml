@@ -8,20 +8,19 @@
     <title>login</title>
 </h:head>
 <h:body>
-    <h:form>
+    <h:form onclick="#{userBean.getUserByUsernameAndPass(input1.value,input2.value)}">
 
         <h3>Dobrodošli! Molimo vas ulogujte se.</h3>
         <!--<h:outputText value="Username" />-->
-        <p:inputText id="username" value="#{userBean.user.user}" var="u"></p:inputText>
+        <p:inputText id="username" binding="#{input1}" value="#{userBean.user.user}" var="u"></p:inputText>
         <h:message for="username"></h:message>
         <br></br><br></br>
 
         <!--<h:outputText value="Password" />-->
-        <p:password id="password" value="#{userBean.user.pass}" var ="p"></p:password>
+        <p:password id="password" binding="#{input2}" value="#{userBean.user.pass}" var="p"></p:password>
         <h:message for="password"></h:message>
         <br></br><br></br>
-        <p:commandButton action="#{userBean.getUserByUsernameAndPass(u,p)}"
-                         actionListener=""
+        <p:commandButton actionListener="#{userBean.getUserByUsernameAndPass(input1.value,input2.value)}"
                          value="Login" var="user1" update="out" >
 
         </p:commandButton>
