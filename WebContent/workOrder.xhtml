@@ -19,7 +19,7 @@
 
 
 
-        <p:dataTable id ="dataTable" var = "s" value="#{workerBean.workers}" selectionMode="single"  selection="#{workerBean.workers}" rowKey="#{s}">
+        <p:dataTable id ="dataTable" var = "s" value="#{workerBean.workers}" selectionMode="single"  selection="#{workerBean.worker}" rowKey="#{s}">
 
             <f:facet name="header">
                 Workers
@@ -53,9 +53,22 @@
                 #{s.professionalism}
             </p:column>
             <f:facet name="footer">
-                <p:commandButton process="dataTable" update=":form" icon="ui-icon-search" value="Select" oncomplete="" />
+                <p:commandButton process="dataTable" update="@form"  value="Select" oncomplete="PF('workerDetail').show()"/>
             </f:facet>
         </p:dataTable>
+
+        <p:outputPanel id="workerDetail" style="text-align:center;">
+            <p:panelGrid  columns="2" rendered="#{not empty workerBean.selectedWorker}" columnClasses="label,value">
+
+                <h:outputText value="Name:" />
+                <h:outputText value="#{workerBean.worker.name}" />
+
+                <h:outputText value="Surname:" />
+                <h:outputText value="#{workerBean.worker.surname}" />
+
+
+            </p:panelGrid>
+        </p:outputPanel>
     </div>
 
 </h:form>
