@@ -9,7 +9,7 @@
 </h:head>
 <h:body>
     <h:form onclick="#{userBean.getUserByUsernameAndPass(input1.value,input2.value)}">
-
+        <p:growl id ="growl" showDetail="true" sticky="true"/>
         <h3>Dobrodošli! Molimo vas ulogujte se.</h3>
         <!--<h:outputText value="Username" />-->
         <p:inputText id="username" binding="#{input1}" value="#{userBean.user.user}" var="u"></p:inputText>
@@ -21,7 +21,7 @@
         <h:message for="password"></h:message>
         <br></br><br></br>
         <p:commandButton actionListener="#{userBean.getUserByUsernameAndPass(input1.value,input2.value)}"
-                         value="Login" var="user1" update="out" >
+                         value="Login" var="user1" update="out" action="workOrder.xhtml?faces-redirect=true" >
 
         </p:commandButton>
         <h:outputText id="out" value="#{userBean.user.prezime}"/>

@@ -7,7 +7,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import java.util.List;
  */
 
 @ManagedBean(name="userBean")
-@Scope
+@RequestScoped
 @Component
 public class UserBean {
 
@@ -46,8 +49,17 @@ public class UserBean {
     }
 
     public User getUserByUsernameAndPass(String name, int password){
-        return userService.getUser(name, password);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
 
+        if(userService.getUser(name,password) == null || userService.getUser(name,password).equals("") ){
+            facesContext.addMessage(null, new FacesMessage("Warning!","Please login!"));
+             return null;
+        }
+       else {
+            facesContext.addMessage(null, new FacesMessage("Successful!", "Welcome!"));
+            return userService.getUser(name, password);
+        }
     }
+
 
 }

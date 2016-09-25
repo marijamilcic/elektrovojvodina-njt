@@ -2,7 +2,10 @@ package jsf.bean;
 
 import jsf.domain.Worker;
 import jsf.service.WorkerService;
+import org.hibernate.jdbc.Work;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,16 @@ public class WorkerBean {
     private String status;
 
     List<Worker> workers;
+
+    private Worker selectedWorker;
+
+    public Worker getSelectedWorker() {
+        return selectedWorker;
+    }
+
+    public void setSelectedWorker(Worker selectedWorker) {
+        this.selectedWorker = selectedWorker;
+    }
 
     public String getProffesionalsm() {
         return proffesionalsm;
@@ -112,12 +125,18 @@ public class WorkerBean {
         workers = workerService.listWorkers();
     }
 
+
+    public Worker getNew(){
+        worker = new Worker();
+        return worker;
+    }
+
     public void addWorker(){
         workerService.addWorker(worker);
     }
 
     public Worker getWorker(int workerId){
-       return workerService.getWorker(workerId);
+        return workerService.getWorker(workerId);
     }
 
     public List<Worker> getWorkers() {
@@ -126,5 +145,15 @@ public class WorkerBean {
 
     public void setWorkers(List<Worker> workers) {
         this.workers = workers;
+    }
+
+    public void onRowSelect(SelectEvent event) {
+        FacesMessage msg = new FacesMessage("Worker Selected", (Integer.toString (((Worker) event.getObject()).getWorkerID())));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onRowUnselect(UnselectEvent event) {
+        FacesMessage msg = new FacesMessage("Worker Unselected", (Integer.toString (((Worker) event.getObject()).getWorkerID())));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 }

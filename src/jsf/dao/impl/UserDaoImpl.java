@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUser(String username, int pass) {
 
-         List<User> lista = (List<User>) sessionFactory.getCurrentSession().createQuery("from jsf.domain.User ").list();
+        List<User> lista = (List<User>) sessionFactory.getCurrentSession().createQuery("from jsf.domain.User ").list();
         for (User u : lista){
             if(u.getUser().equals(username) && u.getPass()== pass ){
                 System.out.println("User" +u.getIme());
