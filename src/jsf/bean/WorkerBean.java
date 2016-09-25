@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.print.DocFlavor;
+import java.util.List;
 
 /**
  * Created by marij on 9/24/2016.
@@ -32,6 +34,8 @@ public class WorkerBean {
     private String proffesionalsm;
 
     private String status;
+
+    List<Worker> workers;
 
     public String getProffesionalsm() {
         return proffesionalsm;
@@ -103,15 +107,24 @@ public class WorkerBean {
         worker = new Worker();
     }
 
+    @PostConstruct
+    public void init(){
+        workers = workerService.listWorkers();
+    }
+
     public void addWorker(){
         workerService.addWorker(worker);
     }
 
-    public void listWorkers(){
-        workerService.listWorkers();
-    }
-
     public Worker getWorker(int workerId){
        return workerService.getWorker(workerId);
+    }
+
+    public List<Worker> getWorkers() {
+        return workers;
+    }
+
+    public void setWorkers(List<Worker> workers) {
+        this.workers = workers;
     }
 }
