@@ -1,5 +1,6 @@
 package jsf.bean;
 
+import jdk.nashorn.internal.objects.NativeArray;
 import jsf.domain.Worker;
 import jsf.service.WorkerService;
 import org.hibernate.jdbc.Work;
@@ -48,6 +49,18 @@ public class WorkerBean {
 
     public void setSelectedWorker(Worker selectedWorker) {
         this.selectedWorker = selectedWorker;
+    }
+
+    public Worker getRow(Worker row){
+        workers = workerService.listWorkers();
+
+        for (Worker w:workers) {
+            if(row.getWorkerID() == w.getWorkerID()){
+                return w;
+            }
+        }
+
+        return null;
     }
 
     public String getProffesionalsm() {

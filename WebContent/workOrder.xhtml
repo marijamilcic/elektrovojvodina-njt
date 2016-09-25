@@ -19,7 +19,7 @@
 
 
 
-        <p:dataTable id ="dataTable" var = "s" value="#{workerBean.workers}" selectionMode="single"  selection="#{workerBean.worker}" rowKey="#{s}">
+        <p:dataTable id ="dataTable"  var = "s" value="#{workerBean.workers}" selectionMode="single"  selection="#{workerBean.worker}" rowKey="#{s}">
 
             <f:facet name="header">
                 Workers
@@ -53,7 +53,7 @@
                 #{s.professionalism}
             </p:column>
             <f:facet name="footer">
-                <p:commandButton process="dataTable" update="@form"  value="Select" oncomplete="PF('workerDetail').show()"/>
+                <p:commandButton process="dataTable" update="@form" action = "#{workerBean.getRow(s)}" value="Select" oncomplete="PF('workerDetail').show()"/>
             </f:facet>
         </p:dataTable>
 
