@@ -69,9 +69,9 @@ public class WorkerBean {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Data Saved"));
     }
 
-    public void reset() {
-        RequestContext.getCurrentInstance().release();
-    }
+//    public void reset() {
+//        RequestContext.getCurrentInstance().;
+//    }
 
     public void resetFail() {
 

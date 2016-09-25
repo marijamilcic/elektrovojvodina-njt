@@ -78,8 +78,8 @@
 			</h:panelGrid>
  
 			<p:commandButton value="Submit" action="#{workerBean.addWorker()}" update="form" />
-			<p:commandButton value="Reset Code" update="panel" process="@this" actionListener="#{workerBean.reset}"  style="margin-right:20px;" />
-
+			<p:commandButton value="Reset Code" update="form" process="@this" actionListener="#{workerBean.reset}"  style="margin-right:20px;" />
+  <!-- ovde bi trebalo imati dugme za reset - cisti vrednosti podataka sa forme nakon submit-a -->
 
  		</h:form>
 
